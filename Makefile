@@ -22,7 +22,9 @@ SRC = ft_isalnum.c \
 		ft_strlcpy.c \
 		ft_strlcat.c \
 		ft_substr.c \
-		ft_strjoin.c
+		ft_strjoin.c \
+		ft_strtrim.c \
+		ft_split.c
 
 OBJS = $(SRC:.c=.o)
 CC = cc
