@@ -6,23 +6,42 @@
 /*   By: mpakhlya <mpakhlya@student.42yerevan.am    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 19:00:05 by mpakhlya          #+#    #+#             */
-/*   Updated: 2024/01/31 22:06:24 by mpakhlya         ###   ########.fr       */
+/*   Updated: 2024/02/01 22:04:22 by mpakhlya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	ft_wordcount(const char *s, char c)
+static char	*wordjkr(const char *s, char *word, int i, char c)
 {
-	int	i;
 	int	j;
+
+	j = 0;
+	while (s[j] && s[i] != c)
+	{
+		word[j] = s[i];
+		j++;
+		i++;
+	}
+	word[j] = '\0';
+	return (word);
+}
+
+static int	wordcount(const char *s, char c)
+{
+	size_t	i;
+	size_t	j;
 
 	i = 0;
 	j = 0;
 	while (s[i])
 	{
 		if (s[i] == c)
+		{
 			i++;
+			while (s[i] == c)
+				i++;
+		}
 		else
 		{
 			j++;
@@ -33,30 +52,33 @@ static int	ft_wordcount(const char *s, char c)
 	return (j);
 }
 
-static char	*ft_putword(const char *s, char c)
+static char	*putword(const char *s, char c)
 {
+	int		i;
 	int		j;
 	char	*word;
+	char	*ww;
 
+	ww = (char *) s;
 	j = 0;
-	while (*s && *s == c)
-		s++;
-	while (s[j] && s[j] != c)
-		j++;
-	word = malloc(sizeof(char) * (j + 1));
-	if (!word)
-		return (0);
-	j = 0;
-	while (s[j] && s[j] != c)
+	i = 0;
+	while (*ww && *ww == c)
 	{
-		word[j] = s[j];
+		ww++;
+		i++;
+	}
+	while (*ww && *ww != c)
+	{
+		ww++;
 		j++;
 	}
-	word[j] = '\0';
-	return (word);
+	word = malloc(sizeof(char) * j + 1);
+	if (!word)
+		return (NULL);
+	return (wordjkr(s, word, i, c));
 }
 
-static void	ft_free(int i, char **new)
+static void	fri(int i, char **new)
 {
 	while (i > 0)
 	{
@@ -75,21 +97,21 @@ char	**ft_split(char const *s, char c)
 	if (!s)
 		return (0);
 	i = 0;
-	wc = ft_wordcount(s, c);
-	new = malloc(sizeof(char *) * wc + 1);
+	wc = wordcount(s, c);
+	new = (char **)malloc(sizeof(char *) * (wc + 1));
 	if (!new)
-		return (new);
+		return (NULL);
 	while (i < wc)
 	{
 		while (*s && *s == c)
 			s++;
-		new[i] = ft_putword(s, c);
+		new[i] = putword(s, c);
 		if (!new[i])
-			ft_free(i, new);
+			fri(i, new);
 		while (*s && *s != c)
 			s++;
 		i++;
 	}
-	new[i] = 0;
+	new[i] = NULL;
 	return (new);
 }
